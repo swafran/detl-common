@@ -8,14 +8,6 @@ import (
 
 type settings map[string]map[string]string
 
-func main() {
-	// // mock
-	// doy := make(settings)
-
-	// SetSettings("/Users/fr/proj/detl/transformer/transformer", &doy)
-
-}
-
 func check(e error) {
 	if e != nil {
 		panic(e)
