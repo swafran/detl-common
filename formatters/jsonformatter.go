@@ -1,3 +1,3 @@
-package outputformat
+package formatters
 
 type JSONFormat struct{}

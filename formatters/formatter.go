@@ -1,4 +1,4 @@
-package outputformat
+package formatters
 
 type FormatItem struct {
 	name      string
