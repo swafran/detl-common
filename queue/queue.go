@@ -1,6 +1,6 @@
 package queue
 
-type Queuer interface {
+type Queue interface {
 	connect(map[string]string)
 	publish(string)
 	consume() string
