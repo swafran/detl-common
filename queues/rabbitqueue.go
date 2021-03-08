@@ -40,3 +40,13 @@ func (q *RabbitQueue) Init(conf map[string]string) {
 func (q *RabbitQueue) Close() {
 	q.Conn.Close()
 }
+
+//Consume one message from queue
+func (q *RabbitQueue) Consume() string {
+	return "doy"
+}
+
+//Publish message to queue
+func (q *RabbitQueue) Publish(m string) {
+
+}
