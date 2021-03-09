@@ -16,21 +16,14 @@ const (
 //RabbitQueue is a communication service to rabbitmq
 type RabbitQueue struct {
 	URL           string
-	ReadExchange  string
-	ReadKey       string
+	ReadQueue     string
 	WriteExchange string
 	WriteKey      string
 	Conn          *amqp.Connection
 }
 
-//Init set fields and establishes connection
+//Init establishes connection to queue server
 func (q *RabbitQueue) Init(conf map[string]string) {
-	q.URL = conf["url"]
-	q.ReadExchange = conf["readExchange"]
-	q.ReadKey = conf["readKey"]
-	q.WriteExchange = conf["writeExchange"]
-	q.WriteKey = conf["writeKey"]
-
 	var err error
 	q.Conn, err = amqp.Dial(fmt.Sprintf("amqp://%s:%s@%s/", user, pass, q.URL))
 	detl.FailOnError(err, "Failed connection")
@@ -43,7 +36,32 @@ func (q *RabbitQueue) Close() {
 
 //Consume one message from queue
 func (q *RabbitQueue) Consume() string {
-	return "doy"
+	ch, _ := q.Conn.Channel()
+
+	queue, _ := ch.QueueDeclare(
+		"extractedq", // name of the queue
+		true,         // should the message be persistent? also queue will survive if the cluster gets reset
+		false,        // autodelete if there's no consumers (like queues that have anonymous names, often used with fanout exchange)
+		false,        // exclusive means I should get an error if any other consumer subsribes to this queue
+		false,        // no-wait means I don't want RabbitMQ to wait if there's a queue successfully setup
+		nil,          // arguments for more advanced configuration
+	)
+
+	msgs, _ := ch.Consume(
+		queue.Name, // queue
+		"",         // consumer
+		true,       // auto-ack
+		false,      // exclusive
+		false,      // no-local
+		false,      // no-wait
+		nil,        // args
+	)
+
+	fmt.Println(msgs)
+
+	return "wha eva"
+
+	//return "{doy:{joey{name:'joey', age:45, pets:['fifi', 'roxie', 'loulou']}}}"
 }
 
 //Publish message to queue
