@@ -5,6 +5,7 @@ import (
 
 	"github.com/streadway/amqp"
 	"gitlab.com/detl/detl-common"
+	"gitlab.com/detl/transform/handlers"
 )
 
 const (
@@ -19,6 +20,7 @@ type RabbitQueue struct {
 	ReadQueue     string
 	WriteExchange string
 	WriteKey      string
+	Handler       handlers.Handler
 	Conn          *amqp.Connection
 }
 
@@ -37,14 +39,19 @@ func (q *RabbitQueue) Close() {
 //Consume one message from queue
 func (q *RabbitQueue) Consume() string {
 	ch, _ := q.Conn.Channel()
+	defer ch.Close()
 
 	queue, _ := ch.QueueDeclare(
 		"extractedq", // name of the queue
-		true,         // should the message be persistent? also queue will survive if the cluster gets reset
-		false,        // autodelete if there's no consumers (like queues that have anonymous names, often used with fanout exchange)
-		false,        // exclusive means I should get an error if any other consumer subsribes to this queue
-		false,        // no-wait means I don't want RabbitMQ to wait if there's a queue successfully setup
-		nil,          // arguments for more advanced configuration
+
+		//TODO set to false
+		true, // should the message be persistent? also queue will survive if the cluster gets reset
+		//
+
+		false, // autodelete if there's no consumers (like queues that have anonymous names, often used with fanout exchange)
+		false, // exclusive means I should get an error if any other consumer subsribes to this queue
+		false, // no-wait means I don't want RabbitMQ to wait if there's a queue successfully setup
+		nil,   // arguments for more advanced configuration
 	)
 
 	msgs, _ := ch.Consume(

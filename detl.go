@@ -25,7 +25,7 @@ func check(e error) {
 	}
 }
 
-// GetConf returns Conf from yaml file
+// GetConf returns configuration from yaml file
 func GetConf(confName string) Conf {
 	var conf Conf
 
