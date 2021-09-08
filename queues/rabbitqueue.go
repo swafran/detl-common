@@ -2,6 +2,7 @@ package queues
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/streadway/amqp"
 	"gitlab.com/detl/detl-common"
@@ -37,11 +38,11 @@ func (q *RabbitQueue) Close() {
 }
 
 //Consume one message from queue
-func (q *RabbitQueue) Consume() string {
+func (q *RabbitQueue) Consume() {
 	ch, _ := q.Conn.Channel()
 	defer ch.Close()
 
-	queue, _ := ch.QueueDeclare(
+	queue, err := ch.QueueDeclare(
 		"extractedq", // name of the queue
 
 		//TODO set to false
@@ -54,7 +55,9 @@ func (q *RabbitQueue) Consume() string {
 		nil,   // arguments for more advanced configuration
 	)
 
-	msgs, _ := ch.Consume(
+	detl.FailOnError(err, "Rabbit: failed to declare queue")
+
+	msgs, err := ch.Consume(
 		queue.Name, // queue
 		"",         // consumer
 		true,       // auto-ack
@@ -64,9 +67,20 @@ func (q *RabbitQueue) Consume() string {
 		nil,        // args
 	)
 
-	fmt.Println(msgs)
+	detl.FailOnError(err, "Rabbit: failed to register a consumer")
 
-	return "wha eva"
+	forever := make(chan bool)
+
+	go func() {
+		for d := range msgs {
+			q.Handler.Handle(d.Body)
+		}
+	}()
+
+	log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
+	<-forever
+
+	//q.Handler.Handle(q, msgs)
 
 	//return "{doy:{joey{name:'joey', age:45, pets:['fifi', 'roxie', 'loulou']}}}"
 }
