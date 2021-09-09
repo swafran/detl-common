@@ -73,7 +73,7 @@ func (q *RabbitQueue) Consume() {
 
 	go func() {
 		for d := range msgs {
-			q.Handler.Handle(d.Body)
+			q.Handler.Handle(string(d.Body))
 		}
 	}()
 
