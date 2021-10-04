@@ -11,6 +11,6 @@ type JSONParser struct{}
 func (*JSONParser) Parse(input string) interface{} {
 	var out interface{}
 	_ = json.Unmarshal([]byte(input), &out)
-
+	//_ = json.Unmarshal([]byte(`{"joey":"heya"}`), &out)
 	return out
 }
