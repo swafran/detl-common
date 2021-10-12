@@ -5,8 +5,8 @@ import (
 	"log"
 
 	"github.com/streadway/amqp"
-	"gitlab.com/detl/detl-common"
-	"gitlab.com/detl/transform/handlers"
+	detl "github.com/swafran/detl-common"
+	"github.com/swafran/detl-transform/handlers"
 )
 
 const (
