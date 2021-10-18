@@ -3,17 +3,15 @@ package queues
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/streadway/amqp"
 	detl "github.com/swafran/detl-common"
 	"github.com/swafran/detl-transform/handlers"
 )
 
-const (
-	// TODO decide on handling credentials, but temporarily, for now:
-	user = "guest"
-	pass = "guest"
-)
+var user = os.Getenv("Q_USER")
+var pass = os.Getenv("Q_PASS")
 
 //RabbitQueue is a communication service to rabbitmq
 type RabbitQueue struct {
