@@ -7,3 +7,8 @@ type Queue interface {
 	Consume()
 	Close()
 }
+
+//Handler processes queue messages
+type Handler interface {
+	Handle(string)
+}

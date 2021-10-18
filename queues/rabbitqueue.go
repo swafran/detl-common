@@ -7,7 +7,6 @@ import (
 
 	"github.com/streadway/amqp"
 	detl "github.com/swafran/detl-common"
-	"github.com/swafran/detl-transform/handlers"
 )
 
 var user = os.Getenv("Q_USER")
@@ -19,7 +18,7 @@ type RabbitQueue struct {
 	ReadQueue     string
 	WriteExchange string
 	WriteKey      string
-	Handler       handlers.Handler
+	Handler       Handler
 	Conn          *amqp.Connection
 }
 
