@@ -9,15 +9,14 @@ import (
 	detl "github.com/swafran/detl-common"
 )
 
-var user = os.Getenv("Q_USER")
-var pass = os.Getenv("Q_PASS")
-
 //RabbitQueue is a communication service to rabbitmq
 type RabbitQueue struct {
 	URL           string
 	ReadQueue     string
+	user          string
+	pass          string
 	WriteExchange string
-	WriteKey      string
+	writeKey      string
 	Handler       Handler
 	Conn          *amqp.Connection
 }
@@ -25,7 +24,10 @@ type RabbitQueue struct {
 //Init establishes connection to queue server
 func (q *RabbitQueue) Init(conf map[string]string) {
 	var err error
-	q.Conn, err = amqp.Dial(fmt.Sprintf("amqp://%s:%s@%s/", user, pass, q.URL))
+	q.user = os.Getenv("DETL_Q_USER")
+	q.pass = os.Getenv("DETL_Q_PASS")
+	q.writeKey = os.Getenv("DETL_Q_WRITE_KEY")
+	q.Conn, err = amqp.Dial(fmt.Sprintf("amqp://%s:%s@%s/", q.user, q.pass, q.URL))
 	detl.FailOnError(err, "Failed connection")
 }
 

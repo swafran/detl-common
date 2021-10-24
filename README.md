@@ -1,6 +1,5 @@
-# DETL : Distributed ETL
+# DETL
 
-* https://github.com/swafran/detl-common
-* https://github.com/swafran/detl-transform
+DETL is a distributed ETL. Each stage of the ETL is its own binary, meant to be containerized and work well with autoscaling.
 
-Usage recommendation: do any aggregation or data joins during extraction. Most of the time extraction calls an API with SQL behind it, SQL directly, or static documents. The tools used naturally lend themselves to aggregation. (If you really do want aggregation during transform, it is possible with a custom handler).
+This repository is the library common to all stages of the ETL.
